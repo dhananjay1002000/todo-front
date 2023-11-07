@@ -16,7 +16,7 @@ function CreateTodo(props){
             todo : event.target.value
         });
 
-        console.log(todo);
+        
     }
     
     return (
@@ -27,7 +27,6 @@ function CreateTodo(props){
                     event.preventDefault();
                     try{ 
                         await axios.post(`${url}/post`,todo)
-                        console.log("In final block")
                         props.handleOnClick(); 
                         setTodo({
                             todo:" "

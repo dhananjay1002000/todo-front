@@ -10,13 +10,24 @@ function List(props){
     const [todo , setTodo] = useState({
         todo : props.todo
     });
-    function handleSave(event){
-        const uid = props.delId;
+    const delId = async ()=>{
+        const resp = await axios.get(url);
+        console.log(resp);
+        return resp.data._id;
+    }
+
+    async function handleSave(event){
+        event.preventDefault(); 
+        const uid = await delId();
+        const id = props.id;
+        console.log(uid);
+        console.log(id);
         setIsEditable(prevValue => !prevValue);
         console.log(todo);
-        axios.put(`${url}/put/${uid}` , todo);
-        event.preventDefault();
+        await axios.put(`${url}/put/${id}/${uid}` , todo);  
+        
     }
+
     function handleOnChange(event){
         setTodo({
             todo: event.target.value
@@ -25,7 +36,6 @@ function List(props){
     }
     async function handleEdit(event){
         setIsEditable(prevValue => !prevValue);
-        
         event.preventDefault();
     }
     return (
@@ -40,8 +50,7 @@ function List(props){
                         }
                     
                         <button onClick={(event)=>{
-                       
-                            props.handleOnDelete(props.id , props.delId);
+                            props.handleOnDelete(props.id);
                             event.preventDefault();
                         }}><DeleteIcon/></button>
                             

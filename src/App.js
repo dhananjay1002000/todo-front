@@ -1,71 +1,25 @@
-import Header from "./components/header";
-import Footer from "./components/footer";
-import CreateTodo from "./components/createTodo";
+import Homepage from "./components/homePage";
+import Register from "./components/register";
+import Login from "./components/login";
+import axios from "axios";
 import './index.css'
-import List from "./components/List";
-import { v4 as uuidv4 } from 'uuid';
-import { useEffect, useState } from "react";
-import axios from 'axios';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+
 const url = process.env.REACT_APP_SERVER_URL;
 function App() {
-  const [todoList , setTodoList] = useState([]);
+  axios.defaults.withCredentials = true;
   
-
-  useEffect(()=>{
-    loadData();
-  },[])
-
- async function loadData(){
-    try{
-      const resp = await axios.get(url);
-      console.log(resp);
-      setTodoList([...resp.data])
-    }
-    catch(err){
-      console.error("An error occurred: " , err);  
-    }
-  }
-
-  function handleOnClick(){ 
-    console.log("hello world");
-    loadData();   
-  }
-
- async function handleOnDelete(id, delId){
-      console.log(delId);
-      setTodoList((prevValue)=>{
-       return prevValue.filter((item , index)=>{
-          return index !== id;
-        })
-      })
-      try{
-        await axios.delete(`${url}/del/${delId}`);
-      }
-      catch(err){
-        console.error("An error occurred: " , err);
-        
-      }
-  }
   return (
    <div>
-    <Header />
-        <div className="container">
-          <CreateTodo handleOnClick={handleOnClick}/>
-                  {
+    
+    <Router>
+        <Routes>
+          <Route exact path="/" element={<Register />}/>
+          <Route exact path="/home" element={<Homepage />}/>
+          <Route exact path="/login" element={<Login />}/>
+        </Routes>
+    </Router>
       
-                    todoList.map((item , index)=>{
-                      return <List 
-                          key = {item._id}
-                          id = {index}
-                          delId = {item._id}
-                          todo = {item.todo}
-                          handleOnDelete = {handleOnDelete}
-                        />                
-                      })
-                  }
-        </div>
-      
-    <Footer  />
   </div>
   );
 }
